@@ -13,9 +13,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
-typealias PermissionRequestResult = Map<String, Boolean>
+public typealias PermissionRequestResult = Map<String, Boolean>
 
-class PermissionRequester private constructor(
+public class PermissionRequester private constructor(
     private val activity: AppCompatActivity,
     private val permissionsBeingRequested: List<PermissionRequestInformation>,
     private val globalLocationSettingEnableDialog: DialogConfiguration?,
@@ -58,7 +58,7 @@ class PermissionRequester private constructor(
      * @param ignoreRationale disables showing the rationale before requesting the permission
      */
     @MainThread
-    fun request(ignoreRationale: Boolean = false) {
+    public fun request(ignoreRationale: Boolean = false) {
         if (globalLocationSettingEnableDialog != null && !isGlobalLocationPermissionEnabled) {
             showGlobalLocationPermissionDialog(globalLocationSettingEnableDialog)
         } else if (ignoreRationale) {
@@ -80,7 +80,7 @@ class PermissionRequester private constructor(
      *
      * @return true if all permissions are granted
      */
-    fun areAllRequiredPermissionsGranted(): Boolean {
+    public fun areAllRequiredPermissionsGranted(): Boolean {
         return notGrantedPermissions.isEmpty()
     }
 
@@ -92,12 +92,12 @@ class PermissionRequester private constructor(
         }
     }
 
-
-    private fun needsRationale(permissionRequest: PermissionRequestInformation) =
-        ActivityCompat.shouldShowRequestPermissionRationale(
+    private fun needsRationale(permissionRequest: PermissionRequestInformation): Boolean {
+        return ActivityCompat.shouldShowRequestPermissionRationale(
             activity,
             permissionRequest.permission
         )
+    }
 
     private fun requestPermissions() {
         val permissionsToRequest = notGrantedPermissions.map { it.permission }
@@ -156,17 +156,17 @@ class PermissionRequester private constructor(
 
     private fun isPermissionGranted(permission: String): Boolean {
         return !isPermissionRequired(permission) ||
-                ContextCompat.checkSelfPermission(
-                    activity,
-                    permission
-                ) == PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+            activity,
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun isPermissionRequired(permission: String) =
-        ManifestPermissionsProvider.getRequestedPermissions(activity)
-            .contains(permission)
+    private fun isPermissionRequired(permission: String): Boolean {
+        return permission in ManifestPermissionsProvider.getRequestedPermissions(activity)
+    }
 
-    class Builder {
+    public class Builder {
         private var globalLocationPermissionEnableDialog: DialogConfiguration? = null
         private val permissionsToRequest = mutableListOf<PermissionRequestInformation>()
         private var activityResultRegistry: ActivityResultRegistry? = null
@@ -179,7 +179,7 @@ class PermissionRequester private constructor(
          * @param permissions list of permissions applicable for dialog configuration
          * @return b®uilder
          */
-        fun requirePermissions(
+        public fun requirePermissions(
             rationaleBuilder: DialogConfigurationBuilder.() -> Unit,
             settingsInvitationBuilder: DialogConfigurationBuilder.() -> Unit,
             permissions: List<String>
@@ -200,7 +200,7 @@ class PermissionRequester private constructor(
             return this
         }
 
-        fun requireGlobalLocationEnabled(builder: DialogConfigurationBuilder.() -> Unit): Builder {
+        public fun requireGlobalLocationEnabled(builder: DialogConfigurationBuilder.() -> Unit): Builder {
             globalLocationPermissionEnableDialog =
                 DialogConfigurationBuilder().apply(builder).build()
             return this
@@ -212,15 +212,15 @@ class PermissionRequester private constructor(
          * @param activityResultRegistry
          * @return current builder
          */
-        fun registerRegistry(activityResultRegistry: ActivityResultRegistry): Builder {
+        public fun registerRegistry(activityResultRegistry: ActivityResultRegistry): Builder {
             this.activityResultRegistry = activityResultRegistry
             return this
         }
 
-        fun build(
+        public fun build(
             activity: AppCompatActivity,
             allPermissionGrantedCallback: () -> Unit
-        ) = PermissionRequester(
+        ): PermissionRequester = PermissionRequester(
             activity,
             permissionsToRequest.toList(),
             globalLocationPermissionEnableDialog,
@@ -228,7 +228,7 @@ class PermissionRequester private constructor(
             activityResultRegistry ?: activity.activityResultRegistry
         )
 
-        fun build(activity: AppCompatActivity): PermissionRequester = build(activity) {}
+        public fun build(activity: AppCompatActivity): PermissionRequester = build(activity) {}
     }
 
     private data class PermissionRequestInformation(
@@ -240,21 +240,20 @@ class PermissionRequester private constructor(
     /**
      * Builder to create a {@link DialogConfiguration}
      */
-    class DialogConfigurationBuilder(
-        @StringRes var positiveButtonNameResId: Int,
-        @StringRes var negativeButtonNameResId: Int,
+    public class DialogConfigurationBuilder(
+        @StringRes public var positiveButtonNameResId: Int,
+        @StringRes public var negativeButtonNameResId: Int,
         var hasCancelButton: Boolean
     ) {
-        constructor() : this(-1, -1, true)
+        public constructor() : this(-1, -1, true)
 
         @StringRes
-        var titleResId: Int? = null
+        public var titleResId: Int? = null
 
         @StringRes
-        var messageResId: Int? = null
+        public var messageResId: Int? = null
 
-
-        fun build() =
+        public fun build(): DialogConfiguration =
             DialogConfiguration(
                 titleResId,
                 messageResId,
@@ -268,7 +267,7 @@ class PermissionRequester private constructor(
      * Dialog configuration for rationale
      * and settings invitation dialogs.
      */
-    data class DialogConfiguration(
+    public data class DialogConfiguration(
         val titleResId: Int?,
         val messageResId: Int?,
         val positiveButtonNameResId: Int,

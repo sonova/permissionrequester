@@ -9,7 +9,7 @@ import android.content.pm.PackageManager
  * Useful when requesting permissions that are not necessary for the
  * current API level (e.g. {@link android.Manifest.permission.BLUETOOTH_CONNECT})
  */
-object ManifestPermissionsProvider {
+public object ManifestPermissionsProvider {
 
     /**
      * Gathers permissions declared in AndroidManifest.xml that
@@ -18,7 +18,7 @@ object ManifestPermissionsProvider {
      * @param context android context
      * @return list of the declared permissions
      */
-    fun getRequestedPermissions(context: Context): List<String> {
+    public fun getRequestedPermissions(context: Context): List<String> {
         return context.getPackageInfo()
             ?.requestedPermissions?.toList().orEmpty()
     }
