@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_rationale_dialog_button_accept">Accept</string>
+    <string name="default_rationale_dialog_button_decline">Decline</string>
+    <string name="default_settings_invitation_button_accept">Settings</string>
+    <string name="default_settings_invitation_button_cancel">Cancel</string>
+</resources>
