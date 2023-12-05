@@ -5,9 +5,9 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -25,7 +25,7 @@ internal fun Activity.startActionApplicationDetailsSettings() {
     )
 }
 
-internal fun AppCompatActivity.showMaterialDialog(
+internal fun ComponentActivity.showMaterialDialog(
     @StringRes titleResId: Int?,
     @StringRes messageResId: Int?,
     @StringRes acceptButtonNameResId: Int,

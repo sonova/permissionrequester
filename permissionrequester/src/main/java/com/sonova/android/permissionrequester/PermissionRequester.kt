@@ -4,19 +4,19 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.provider.Settings
+import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.annotation.MainThread
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 public typealias PermissionRequestResult = Map<String, Boolean>
 
 public class PermissionRequester private constructor(
-    private val activity: AppCompatActivity,
+    private val activity: ComponentActivity,
     private val permissionsBeingRequested: List<PermissionRequestInformation>,
     private val globalLocationSettingEnableDialog: DialogConfiguration?,
     private val permissionGrantStatusCallback: () -> Unit,
@@ -156,10 +156,10 @@ public class PermissionRequester private constructor(
 
     private fun isPermissionGranted(permission: String): Boolean {
         return !isPermissionRequired(permission) ||
-            ContextCompat.checkSelfPermission(
-            activity,
-            permission
-        ) == PackageManager.PERMISSION_GRANTED
+                ContextCompat.checkSelfPermission(
+                    activity,
+                    permission
+                ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun isPermissionRequired(permission: String): Boolean {
@@ -177,7 +177,7 @@ public class PermissionRequester private constructor(
          * @param rationaleBuilder dialog configuration when showing a rationale
          * @param settingsInvitationBuilder dialog configuration when inviting to allow the permission in settings
          * @param permissions list of permissions applicable for dialog configuration
-         * @return b®uilder
+         * @return builder
          */
         public fun requirePermissions(
             rationaleBuilder: DialogConfigurationBuilder.() -> Unit,
@@ -218,7 +218,7 @@ public class PermissionRequester private constructor(
         }
 
         public fun build(
-            activity: AppCompatActivity,
+            activity: ComponentActivity,
             allPermissionGrantedCallback: () -> Unit
         ): PermissionRequester = PermissionRequester(
             activity,
@@ -228,7 +228,7 @@ public class PermissionRequester private constructor(
             activityResultRegistry ?: activity.activityResultRegistry
         )
 
-        public fun build(activity: AppCompatActivity): PermissionRequester = build(activity) {}
+        public fun build(activity: ComponentActivity): PermissionRequester = build(activity) {}
     }
 
     private data class PermissionRequestInformation(
