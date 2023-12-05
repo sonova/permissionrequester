@@ -28,20 +28,20 @@ internal fun Activity.startActionApplicationDetailsSettings() {
 internal fun ComponentActivity.showMaterialDialog(
     @StringRes titleResId: Int?,
     @StringRes messageResId: Int?,
-    @StringRes acceptButtonNameResId: Int,
-    onAccept: DialogInterface.OnClickListener?,
-    @StringRes declineButtonNameResId: Int? = null,
-    onDecline: DialogInterface.OnClickListener? = null,
+    @StringRes positiveButtonNameResId: Int,
+    onPositiveClick: DialogInterface.OnClickListener?,
+    @StringRes negativeButtonNameResId: Int? = null,
+    onNegativeClick: DialogInterface.OnClickListener? = null,
     @StringRes cancelButtonNameResId: Int? = null,
-    onCancel: DialogInterface.OnClickListener? = null,
+    onCancelClick: DialogInterface.OnClickListener? = null,
     isDialogCancelable: Boolean = true
 ): AlertDialog? {
     return MaterialAlertDialogBuilder(this).apply {
         titleResId?.let { setTitle(it) }
         messageResId?.let { setMessage(it) }
-        setPositiveButton(acceptButtonNameResId, onAccept)
-        declineButtonNameResId?.also { setNegativeButton(it, onDecline) }
-        cancelButtonNameResId?.also { setNeutralButton(it, onCancel) }
+        setPositiveButton(positiveButtonNameResId, onPositiveClick)
+        negativeButtonNameResId?.also { setNegativeButton(it, onNegativeClick) }
+        cancelButtonNameResId?.also { setNeutralButton(it, onCancelClick) }
         setCancelable(isDialogCancelable)
     }.show().also {
         lifecycle.addObserver(Observer(lifecycle, it))

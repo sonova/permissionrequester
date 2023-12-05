@@ -68,7 +68,8 @@ public class PermissionRequester private constructor(
             requestPermissions()
         } else {
             val rationaleToShow = notGrantedPermissions
-                .firstOrNull { needsRationale(it) }?.rationaleDialog
+                .firstOrNull { needsRationale(it) }
+                ?.rationaleDialog
 
             if (rationaleToShow != null) {
                 showRationaleDialog(rationaleToShow)
@@ -115,9 +116,9 @@ public class PermissionRequester private constructor(
         activity.showMaterialDialog(
             titleResId = dialogConfig.titleResId,
             messageResId = dialogConfig.messageResId,
-            acceptButtonNameResId = dialogConfig.positiveButtonNameResId,
-            onAccept = { _, _ -> requestPermissions() },
-            declineButtonNameResId = dialogConfig.negativeButtonNameResId,
+            positiveButtonNameResId = dialogConfig.positiveButtonNameResId,
+            onPositiveClick = { _, _ -> requestPermissions() },
+            negativeButtonNameResId = dialogConfig.negativeButtonNameResId,
             isDialogCancelable = false
         )
     }
@@ -126,8 +127,8 @@ public class PermissionRequester private constructor(
         activity.showMaterialDialog(
             titleResId = dialogConfig.titleResId,
             messageResId = dialogConfig.messageResId,
-            acceptButtonNameResId = dialogConfig.positiveButtonNameResId,
-            onAccept = { dialog, _ ->
+            positiveButtonNameResId = dialogConfig.positiveButtonNameResId,
+            onPositiveClick = { dialog, _ ->
                 dialog.dismiss()
                 activity.startActionApplicationDetailsSettings()
             },
@@ -141,13 +142,13 @@ public class PermissionRequester private constructor(
         activity.showMaterialDialog(
             titleResId = dialogConfig.titleResId,
             messageResId = dialogConfig.messageResId,
-            acceptButtonNameResId = dialogConfig.positiveButtonNameResId,
-            onAccept = { _, _ ->
+            positiveButtonNameResId = dialogConfig.positiveButtonNameResId,
+            onPositiveClick = { _, _ ->
                 navigateToGlobalLocationSetting.launch(
                     Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 )
             },
-            declineButtonNameResId = dialogConfig.negativeButtonNameResId
+            negativeButtonNameResId = dialogConfig.negativeButtonNameResId
         )
     }
 
@@ -188,13 +189,13 @@ public class PermissionRequester private constructor(
             permissions: List<String>
         ): Builder {
             val rationaleDialog = DialogConfigurationBuilder(
-                positiveButtonNameResId = R.string.default_rationale_dialog_button_accept,
-                negativeButtonNameResId = R.string.default_rationale_dialog_button_decline,
+                positiveButtonNameResId = R.string.default_rationale_dialog_button_positive,
+                negativeButtonNameResId = R.string.default_rationale_dialog_button_negative,
                 hasCancelButton = true
             ).apply(rationaleBuilder).build()
             val settingsInvitationDialog = DialogConfigurationBuilder(
-                positiveButtonNameResId = R.string.default_settings_invitation_button_accept,
-                negativeButtonNameResId = R.string.default_settings_invitation_button_cancel,
+                positiveButtonNameResId = R.string.default_settings_invitation_button_positive,
+                negativeButtonNameResId = R.string.default_settings_invitation_button_negative,
                 hasCancelButton = false
             ).apply(settingsInvitationBuilder).build()
             permissions.mapTo(permissionsToRequest) { permission ->
@@ -247,7 +248,7 @@ public class PermissionRequester private constructor(
     public class DialogConfigurationBuilder(
         @StringRes public var positiveButtonNameResId: Int,
         @StringRes public var negativeButtonNameResId: Int,
-        var hasCancelButton: Boolean
+        public var hasCancelButton: Boolean
     ) {
         public constructor() : this(-1, -1, true)
 
