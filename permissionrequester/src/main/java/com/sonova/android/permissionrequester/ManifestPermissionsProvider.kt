@@ -3,6 +3,7 @@ package com.sonova.android.permissionrequester
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.os.Build
 
 /**
  * Wrapper object for reading the permissions declared in the manifest.
@@ -24,7 +25,7 @@ public object ManifestPermissionsProvider {
     }
 
     private fun Context.getPackageInfo(): PackageInfo? =
-        if (BuildVersionProvider.isTOrAbove) {
+        if (VersionChecker.isBuildVersionUpwards(Build.VERSION_CODES.TIRAMISU)) {
             packageManager.getPackageInfo(
                 packageName,
                 PackageManager.PackageInfoFlags.of(0)

@@ -3,6 +3,7 @@ package com.sonova.android.permissionrequester
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.os.Build
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultRegistry
@@ -48,7 +49,7 @@ public class PermissionRequester private constructor(
 
     private val navigateToGlobalLocationSetting =
         activity.registerForActivityResult(StartActivityForResult(), activityResultRegistry) {
-            if (isGlobalLocationPermissionEnabled) request()
+            if (isGlobalLocationPermissionEnabled()) request()
         }
 
     /**
@@ -62,7 +63,7 @@ public class PermissionRequester private constructor(
      */
     @MainThread
     public fun request(ignoreRationale: Boolean = false) {
-        if (globalLocationSettingEnableDialog != null && !isGlobalLocationPermissionEnabled) {
+        if (globalLocationSettingEnableDialog != null && !isGlobalLocationPermissionEnabled()) {
             showGlobalLocationPermissionDialog(globalLocationSettingEnableDialog)
         } else if (ignoreRationale) {
             requestPermissions()
@@ -118,8 +119,7 @@ public class PermissionRequester private constructor(
             messageResId = dialogConfig.messageResId,
             positiveButtonNameResId = dialogConfig.positiveButtonNameResId,
             onPositiveClick = { _, _ -> requestPermissions() },
-            negativeButtonNameResId = dialogConfig.negativeButtonNameResId,
-            isDialogCancelable = false
+            negativeButtonNameResId = dialogConfig.negativeButtonNameResId
         )
     }
 
@@ -133,8 +133,7 @@ public class PermissionRequester private constructor(
                 activity.startActionApplicationDetailsSettings()
             },
             cancelButtonNameResId = dialogConfig.negativeButtonNameResId
-                .takeIf { dialogConfig.hasCancelButton },
-            isDialogCancelable = false
+                .takeIf { dialogConfig.hasCancelButton }
         )
     }
 
@@ -152,11 +151,16 @@ public class PermissionRequester private constructor(
         )
     }
 
-    private val isGlobalLocationPermissionEnabled: Boolean
-        get() = !BuildVersionProvider.isPOrAbove || ContextCompat.getSystemService(
-            activity,
-            LocationManager::class.java
-        )?.isLocationEnabled == true
+    private fun isGlobalLocationPermissionEnabled(): Boolean {
+        return if (VersionChecker.isBuildVersionUpwards(Build.VERSION_CODES.P)) {
+            ContextCompat.getSystemService(
+                activity,
+                LocationManager::class.java
+            )?.isLocationEnabled == true
+        } else {
+            true
+        }
+    }
 
     private fun isPermissionGranted(permission: String): Boolean {
         return !isPermissionRequired(permission) ||
