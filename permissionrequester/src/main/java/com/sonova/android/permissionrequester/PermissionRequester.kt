@@ -20,6 +20,7 @@ public class PermissionRequester private constructor(
     private val permissionsBeingRequested: List<PermissionRequestInformation>,
     private val globalLocationSettingEnableDialog: DialogConfiguration?,
     private val permissionGrantStatusCallback: () -> Unit,
+    private val permissionSnapshotLogger: PermissionSnapshotLogger,
     activityResultRegistry: ActivityResultRegistry
 ) {
     private val notGrantedPermissions: List<PermissionRequestInformation>
@@ -27,6 +28,8 @@ public class PermissionRequester private constructor(
 
     private val permissionRequestCallback: (PermissionRequestResult) -> Unit =
         { permissionsResult ->
+            val (granted, denied) = permissionsResult.toList().partition { it.second }
+            permissionSnapshotLogger.log(granted.map { it.first }, denied.map { it.first })
             val permissionRequestedAndNotGranted = permissionsBeingRequested
                 .firstOrNull { permissionsResult[it.permission] == false }
 
@@ -166,7 +169,7 @@ public class PermissionRequester private constructor(
         return permission in ManifestPermissionsProvider.getRequestedPermissions(activity)
     }
 
-    public class Builder {
+    public class Builder(private val permissionSnapshotLogger: PermissionSnapshotLogger = NoLog) {
         private var globalLocationPermissionEnableDialog: DialogConfiguration? = null
         private val permissionsToRequest = mutableListOf<PermissionRequestInformation>()
         private var activityResultRegistry: ActivityResultRegistry? = null
@@ -225,6 +228,7 @@ public class PermissionRequester private constructor(
             permissionsToRequest.toList(),
             globalLocationPermissionEnableDialog,
             allPermissionGrantedCallback,
+            permissionSnapshotLogger,
             activityResultRegistry ?: activity.activityResultRegistry
         )
 
