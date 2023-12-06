@@ -20,17 +20,17 @@ public object ManifestPermissionsProvider {
      * @return list of the declared permissions
      */
     public fun getRequestedPermissions(context: Context): List<String> {
-        return context.getPackageInfo()
+        return context.getPackageInfo(PackageManager.GET_PERMISSIONS)
             ?.requestedPermissions?.toList().orEmpty()
     }
 
-    private fun Context.getPackageInfo(): PackageInfo? =
+    private fun Context.getPackageInfo(flags: Int = 0): PackageInfo? =
         if (VersionChecker.isBuildVersionUpwards(Build.VERSION_CODES.TIRAMISU)) {
             packageManager.getPackageInfo(
                 packageName,
-                PackageManager.PackageInfoFlags.of(0)
+                PackageManager.PackageInfoFlags.of(flags.toLong())
             )
         } else {
-            packageManager.getPackageInfo(packageName, 0)
+            packageManager.getPackageInfo(packageName, flags)
         }
 }
