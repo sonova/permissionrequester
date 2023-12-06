@@ -22,6 +22,7 @@ import io.mockk.slot
 import io.mockk.unmockkAll
 import io.mockk.verify
 import org.junit.After
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -61,7 +62,7 @@ class PermissionRequesterTest {
     }
 
     @Test
-    fun testOnlyDeniedPermissionsGetRequestedAgain() {
+    fun `test that only denied permissions get requested again`() {
         permission1.deny()
         permission2.grant()
         permission3.deny()
@@ -78,7 +79,7 @@ class PermissionRequesterTest {
     }
 
     @Test
-    fun testWhenNoGlobalLocationPermissionDialogConfigNotPassedDontCheckLocation() {
+    fun `test when no global location permission dialog config passed, then don't check location`() {
         mockPermissionsLauncher()
         permission1.deny()
 
@@ -99,7 +100,7 @@ class PermissionRequesterTest {
 
     @SuppressLint("NewApi")
     @Test
-    fun testWhenNoGlobalLocationPermissionDialogConfigPassedCheckLocation() {
+    fun `test when global location permission dialog config passed, then check location`() {
         every { VersionChecker.isBuildVersionUpwards(any()) } returns true
         every { ContextCompat.getSystemService(any(), LocationManager::class.java) } returns mockk {
             every { isLocationEnabled } returns false
@@ -134,7 +135,7 @@ class PermissionRequesterTest {
     }
 
     @Test
-    fun testFirstPermissionRequiringRationaleIsShownFirst() {
+    fun `test if permission requires rationale, then show rationale first`() {
         permission1.grant()
         permission2.deny()
         permission3.deny()
@@ -154,7 +155,7 @@ class PermissionRequesterTest {
     }
 
     @Test
-    fun testWhenAllPermissionsGrantedThenCallCallback() {
+    fun `test when all permissions granted then call callback directly`() {
         permission1.grant()
         permission2.grant()
         permission3.grant()
@@ -172,7 +173,23 @@ class PermissionRequesterTest {
     }
 
     @Test
-    fun testCallbackShowRationaleWhenPermissionNotGranted() {
+    fun `test that if all permissions granted then allRequiredPermissionsGranted returns true`() {
+        permission1.grant()
+        permission2.grant()
+        permission3.grant()
+
+        val permissionRequester = Builder(logger)
+            .requirePermissions(
+                rationaleDialogConfig,
+                settingsDialogConfig,
+                listOf(permission1, permission2, permission3)
+            ).build(activity, callback)
+
+        assertTrue(permissionRequester.areAllRequiredPermissionsGranted())
+    }
+
+    @Test
+    fun `test callback shows rationale when permission is not granted`() {
         permission1.grant()
 
         val slots = mutableListOf<ActivityResultCallback<Map<String, Boolean>>>()
@@ -200,7 +217,7 @@ class PermissionRequesterTest {
     }
 
     @Test
-    fun testCallbackShowSettingsWhenPermissionNotGranted() {
+    fun `test callback shows settings when permission is not granted`() {
         permission1.grant()
 
         val slots = mutableListOf<ActivityResultCallback<Map<String, Boolean>>>()
@@ -227,7 +244,7 @@ class PermissionRequesterTest {
     }
 
     @Test
-    fun testPermissionsAreNotReRequestedIfCallbackDidNotGetAnyResponse() {
+    fun `test permissions are not re-requested if callback did not get any response`() {
         val slots = mutableListOf<ActivityResultCallback<Map<String, Boolean>>>()
         every {
             activity.registerForActivityResult(
@@ -252,7 +269,7 @@ class PermissionRequesterTest {
     }
 
     @Test
-    fun testWhenPermissionsAreGrantedThenUseCallback() {
+    fun `test when user grants all permissions then invoke callback`() {
         permission1.grant()
 
         val slots = mutableListOf<ActivityResultCallback<Map<String, Boolean>>>()
@@ -277,7 +294,7 @@ class PermissionRequesterTest {
     }
 
     @Test
-    fun testWhenAreNotRequiredThenCallCallback() {
+    fun `test when none of the permissions is required then invoke callback directly`() {
         mockManifestPermissionProvider(listOf())
         mockPermissionsLauncher()
 
