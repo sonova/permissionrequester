@@ -8,7 +8,11 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("junit:junit:4.13.2")
+    implementation("androidx.test:core-ktx:1.5.0")
+
+    implementation("io.mockk:mockk:1.13.8")
+
+    implementation(project(":permissionrequester"))
+
 }
