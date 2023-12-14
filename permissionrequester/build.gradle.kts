@@ -7,9 +7,6 @@ plugins {
 android {
     namespace = "com.sonova.android.permissionrequester"
 
-    defaultConfig {
-        consumerProguardFiles("consumer-rules.pro")
-    }
     buildTypes {
         release {
             isMinifyEnabled = false
