@@ -51,7 +51,7 @@ fun mockkPermissions(
     mockPermissionRequester(permissionConfig.associate { it.permission to it.userGranted })
 }
 
-fun mockBuildVersion(currentBuildVersion: Int) {
+private fun mockBuildVersion(currentBuildVersion: Int) {
     mockkObject(VersionChecker)
     every { VersionChecker.isBuildVersionUpwards(any()) } answers {
         currentBuildVersion >= firstArg<Int>()
