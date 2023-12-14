@@ -1,4 +1,4 @@
-package com.sonova.android.permissionrequester.ui.theme
+package com.sonova.android.permissionrequester.sample.ui.theme
 
 import android.app.Activity
 import android.os.Build
