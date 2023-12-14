@@ -34,17 +34,16 @@ internal fun ComponentActivity.showMaterialDialog(
     onNegativeClick: DialogInterface.OnClickListener? = null,
     @StringRes cancelButtonNameResId: Int? = null,
     onCancelClick: DialogInterface.OnClickListener? = null
-): AlertDialog {
-    return MaterialAlertDialogBuilder(this).apply {
+) {
+    MaterialAlertDialogBuilder(this).apply {
         titleResId?.let { setTitle(it) }
         messageResId?.let { setMessage(it) }
         setPositiveButton(positiveButtonNameResId, onPositiveClick)
         negativeButtonNameResId?.also { setNegativeButton(it, onNegativeClick) }
         cancelButtonNameResId?.also { setNeutralButton(it, onCancelClick) }
         setCancelable(false)
-    }.show().also {
-        lifecycle.addObserver(Observer(lifecycle, it))
-    }
+    }.show()
+        .also { lifecycle.addObserver(Observer(lifecycle, it)) }
 }
 
 private class Observer(

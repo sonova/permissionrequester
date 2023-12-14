@@ -54,11 +54,7 @@ class PermissionRequesterTest {
         mockkStatic("com.sonova.android.permissionrequester.ActivityExtensionsKt")
         mockShowingDialog()
         mockManifestPermissionProvider()
-    }
-
-    @After
-    fun tearDown() {
-        unmockkAll()
+        mockPermissionsLauncher()
     }
 
     @Test
@@ -66,7 +62,6 @@ class PermissionRequesterTest {
         permission1.deny()
         permission2.grant()
         permission3.deny()
-        mockPermissionsLauncher()
 
         Builder(logger)
             .requirePermissions(
@@ -80,7 +75,6 @@ class PermissionRequesterTest {
 
     @Test
     fun `test when no global location permission dialog config passed, then don't check location`() {
-        mockPermissionsLauncher()
         permission1.deny()
 
         Builder(logger)
@@ -141,7 +135,6 @@ class PermissionRequesterTest {
         permission3.deny()
         permission2.needsRationale()
         permission3.needsRationale()
-        mockPermissionsLauncher()
 
         Builder(logger)
             .requirePermissions(
@@ -159,7 +152,6 @@ class PermissionRequesterTest {
         permission1.grant()
         permission2.grant()
         permission3.grant()
-        mockPermissionsLauncher()
 
         Builder(logger)
             .requirePermissions(
@@ -296,7 +288,6 @@ class PermissionRequesterTest {
     @Test
     fun `test when none of the permissions is required then invoke callback directly`() {
         mockManifestPermissionProvider(listOf())
-        mockPermissionsLauncher()
 
         Builder(logger)
             .requirePermissions(
@@ -394,7 +385,7 @@ class PermissionRequesterTest {
     }
 
     private fun mockShowingDialog() {
-        every {
+        justRun {
             activity.showMaterialDialog(
                 titleResId = any(),
                 messageResId = any(),
@@ -405,7 +396,7 @@ class PermissionRequesterTest {
                 cancelButtonNameResId = any(),
                 onCancelClick = any()
             )
-        } returns mockk(relaxed = true)
+        }
     }
 
     private fun mockManifestPermissionProvider(
@@ -414,4 +405,10 @@ class PermissionRequesterTest {
         mockkObject(ManifestPermissionsProvider)
         every { ManifestPermissionsProvider.getRequestedPermissions(any()) } returns permissions
     }
+
+    @After
+    fun tearDown() {
+        unmockkAll()
+    }
+
 }
