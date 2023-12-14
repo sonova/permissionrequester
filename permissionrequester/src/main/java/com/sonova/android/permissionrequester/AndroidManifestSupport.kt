@@ -10,16 +10,22 @@ import android.os.Build
  * Useful when requesting permissions that are not necessary for the
  * current API level (e.g. {@link android.Manifest.permission.BLUETOOTH_CONNECT})
  */
-public object ManifestPermissionsProvider {
+public object AndroidManifestSupport {
 
     /**
      * Gathers permissions declared in AndroidManifest.xml that
-     * have not been removed by the {@link android.os.Build.VERSION.SDK_INT}.
+     * have not been removed by the {@link android.os.Build.VERSION.SDK_INT}
+     * and checks that permission is actually requested.
      *
      * @param context android context
-     * @return list of the declared permissions
+     * @param permission going to be requested
+     * @return permission is requested in AndroidManifest.xml
      */
-    public fun getRequestedPermissions(context: Context): List<String> {
+    public fun isPermissionRequested(context: Context, permission: String): Boolean {
+        return permission in getPermissionsRequested(context)
+    }
+
+    private fun getPermissionsRequested(context: Context): List<String> {
         return context.getPackageInfo(PackageManager.GET_PERMISSIONS)
             ?.requestedPermissions?.toList().orEmpty()
     }

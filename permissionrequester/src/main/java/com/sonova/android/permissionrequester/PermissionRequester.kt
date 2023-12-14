@@ -163,15 +163,11 @@ public class PermissionRequester private constructor(
     }
 
     private fun isPermissionGranted(permission: String): Boolean {
-        return !isPermissionRequired(permission) ||
+        return !AndroidManifestSupport.isPermissionRequested(activity, permission) ||
                 ContextCompat.checkSelfPermission(
                     activity,
                     permission
                 ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun isPermissionRequired(permission: String): Boolean {
-        return permission in ManifestPermissionsProvider.getRequestedPermissions(activity)
     }
 
     public class Builder(private val permissionSnapshotLogger: PermissionSnapshotLogger = NoLog) {

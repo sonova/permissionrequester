@@ -53,7 +53,7 @@ class PermissionRequesterTest {
         mockkObject(VersionChecker)
         mockkStatic("com.sonova.android.permissionrequester.ActivityExtensionsKt")
         mockShowingDialog()
-        mockManifestPermissionProvider()
+        mockManifestPermissionProvider(true)
         mockPermissionsLauncher()
     }
 
@@ -287,7 +287,7 @@ class PermissionRequesterTest {
 
     @Test
     fun `test when none of the permissions is required then invoke callback directly`() {
-        mockManifestPermissionProvider(listOf())
+        mockManifestPermissionProvider(false)
 
         Builder(logger)
             .requirePermissions(
@@ -399,11 +399,14 @@ class PermissionRequesterTest {
         }
     }
 
-    private fun mockManifestPermissionProvider(
-        permissions: List<String> = listOf(permission1, permission2, permission3)
-    ) {
-        mockkObject(ManifestPermissionsProvider)
-        every { ManifestPermissionsProvider.getRequestedPermissions(any()) } returns permissions
+    private fun mockManifestPermissionProvider(permissionRequired: Boolean) {
+        mockkObject(AndroidManifestSupport)
+        every {
+            AndroidManifestSupport.isPermissionRequested(
+                any(),
+                any()
+            )
+        } returns permissionRequired
     }
 
     @After

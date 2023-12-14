@@ -16,7 +16,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.test.core.app.ApplicationProvider
-import com.sonova.android.permissionrequester.ManifestSupport
+import com.sonova.android.permissionrequester.AndroidManifestSupport
 import com.sonova.android.permissionrequester.PermissionRequester
 import com.sonova.android.permissionrequester.VersionChecker
 import io.mockk.every
@@ -34,9 +34,9 @@ fun mockkPermissions(
 ) {
     mockkStatic(ContextCompat::class)
     mockkStatic(ActivityCompat::class)
-    mockkObject(ManifestSupport)
+    mockkObject(AndroidManifestSupport)
 
-    every { ManifestSupport.isPermissionRequested(any(), any()) } returns true
+    every { AndroidManifestSupport.isPermissionRequested(any(), any()) } returns true
 
     mockBuildVersion(buildVersion)
 
