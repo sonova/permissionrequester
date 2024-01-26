@@ -27,7 +27,7 @@ import io.mockk.mockkStatic
 import io.mockk.slot
 
 fun mockkPermissions(
-    permissionConfig: List<TestPermission> = emptyList(),
+    permissionTestConfig: List<PermissionTestConfiguration> = emptyList(),
     buildVersion: Int = Build.VERSION.SDK_INT,
     globalLocationPermissionEnabled: Boolean = true,
     defaultPermissionStatusGranted: Boolean = false
@@ -39,16 +39,19 @@ fun mockkPermissions(
     every { AndroidManifestSupport.isPermissionRequested(any(), any()) } returns true
 
     mockBuildVersion(buildVersion)
-
     mockGlobalLocationStatus(globalLocationPermissionEnabled)
+    mockDefaultGrantPermissionStatus(defaultPermissionStatusGranted)
+    permissionTestConfig.forEach { it.mockkPermission() }
+    mockPermissionRequester(permissionTestConfig)
+}
+
+private fun mockDefaultGrantPermissionStatus(defaultPermissionStatusGranted: Boolean) {
     every {
         ContextCompat.checkSelfPermission(
             any(),
             any()
         )
     } returns defaultPermissionStatusGranted.toGrantStatus()
-    permissionConfig.forEach { mockPermission(it) }
-    mockPermissionRequester(permissionConfig.associate { it.permission to it.userGranted })
 }
 
 private fun mockBuildVersion(currentBuildVersion: Int) {
@@ -65,55 +68,56 @@ private fun mockGlobalLocationStatus(globalLocationPermissionEnabled: Boolean) {
     } returns mockk { every { isLocationEnabled } returns globalLocationPermissionEnabled }
 }
 
-private fun mockPermission(testPermission: TestPermission) {
+private fun PermissionTestConfiguration.mockkPermission() {
     val returnValuesForPermission = listOf(
-        testPermission.initiallyGranted,
-        testPermission.userGranted,
+        initiallyGranted,
+        userGranted,
     ).map { it.toGrantStatus() }
     every {
         ContextCompat.checkSelfPermission(
             any(),
-            testPermission.permission
+            permission
         )
     } returnsMany returnValuesForPermission
     every {
-        ActivityCompat.shouldShowRequestPermissionRationale(any(), testPermission.permission)
-    } returns testPermission.shouldShowRationale
+        ActivityCompat.shouldShowRequestPermissionRationale(any(), permission)
+    } returns shouldShowRationale
 }
 
-private fun mockPermissionRequester(expectedResult: Map<String, Boolean>) =
+private fun mockPermissionRequester(config: List<PermissionTestConfiguration>) {
     with(PermissionRequester.Builder()) {
-        registerRegistry(createRegistryForResult(expectedResult))
-
+        val expectedResult = config.associate { it.permission to it.userGranted }
+        registerRegistry(PermissionMockRegistry(expectedResult))
         mockkConstructor(PermissionRequester.Builder::class)
         returnThisWhenRequiringGlobalLocationStatus()
         returnThisWhenRequestingPermissions()
     }
+}
 
-private fun createRegistryForResult(expectedResult: Map<String, Boolean>) =
-    object : ActivityResultRegistry() {
-        override fun <I, O> onLaunch(
-            requestCode: Int,
-            contract: ActivityResultContract<I, O>,
-            input: I,
-            options: ActivityOptionsCompat?
-        ) {
-            when (contract) {
-                is ActivityResultContracts.RequestMultiplePermissions -> dispatchResult(
-                    requestCode,
-                    expectedResult
-                )
+private class PermissionMockRegistry(private val expectedResult: Map<String, Boolean>) :
+    ActivityResultRegistry() {
+    override fun <I, O> onLaunch(
+        requestCode: Int,
+        contract: ActivityResultContract<I, O>,
+        input: I,
+        options: ActivityOptionsCompat?
+    ) {
+        when (contract) {
+            is ActivityResultContracts.RequestMultiplePermissions -> dispatchResult(
+                requestCode,
+                expectedResult
+            )
 
-                is ActivityResultContracts.StartActivityForResult -> {
-                    if (input is Intent) {
-                        ApplicationProvider.getApplicationContext<Context>()
-                            .startActivity(input.apply { addFlags(FLAG_ACTIVITY_NEW_TASK) })
-                        dispatchResult(requestCode, ActivityResult(Activity.RESULT_OK, Intent()))
-                    }
+            is ActivityResultContracts.StartActivityForResult -> {
+                if (input is Intent) {
+                    ApplicationProvider.getApplicationContext<Context>()
+                        .startActivity(input.apply { addFlags(FLAG_ACTIVITY_NEW_TASK) })
+                    dispatchResult(requestCode, ActivityResult(Activity.RESULT_OK, Intent()))
                 }
             }
         }
     }
+}
 
 private fun Boolean.toGrantStatus() =
     if (this) PackageManager.PERMISSION_GRANTED else PackageManager.PERMISSION_DENIED
@@ -148,10 +152,3 @@ private fun PermissionRequester.Builder.returnThisWhenRequiringGlobalLocationSta
         requireGlobalLocationEnabled(dialogConfiguration.last())
     }
 }
-
-data class TestPermission(
-    val permission: String,
-    val initiallyGranted: Boolean,
-    val userGranted: Boolean = initiallyGranted,
-    val shouldShowRationale: Boolean = false
-)
