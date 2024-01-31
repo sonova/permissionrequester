@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val grantStatus = permissionGranted.observeAsState(false).value
+                    val grantStatus = permissionGranted.observeAsState(isPermissionGranted()).value
                     PermissionButton(permissionRequester, grantStatus)
                 }
             }
@@ -68,11 +68,15 @@ class MainActivity : ComponentActivity() {
                 PERMISSIONS
             )
             .build(this) {
-                val granted = PERMISSIONS.all {
-                    ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-                }
+                val granted = isPermissionGranted()
                 permissionGranted.postValue(granted)
             }
+
+    private fun isPermissionGranted(): Boolean {
+        return PERMISSIONS.all {
+            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+        }
+    }
 
     companion object {
         private val PERMISSIONS = listOf(
