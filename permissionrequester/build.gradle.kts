@@ -22,8 +22,8 @@ ktlint {
 
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("com.google.android.material:material:1.10.0")
+    implementation("com.google.android.material:material:1.11.0")
 
     testImplementation("junit:junit:4.13.2")
-    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("io.mockk:mockk:1.13.9")
 }
