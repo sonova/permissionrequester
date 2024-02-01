@@ -26,7 +26,16 @@ import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.slot
 
-fun mockkPermissions(
+/**
+ * Mocks permission grant status for the configured permissions.
+ * Depending on the buildVersion some checks will not be done.
+ *
+ * @param permissionTestConfig permissions that will be specifically mocked
+ * @param buildVersion for specific permissions that appear in a newer android version
+ * @param globalLocationPermissionEnabled if global location permission shall be enabled or not
+ * @param defaultPermissionStatusGranted per default all permission are not granted
+ */
+fun mockPermissions(
     permissionTestConfig: List<PermissionTestConfiguration> = emptyList(),
     buildVersion: Int = Build.VERSION.SDK_INT,
     globalLocationPermissionEnabled: Boolean = true,

@@ -13,7 +13,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.sonova.android.permissionrequester.sample.MainActivity
 import com.sonova.android.permissionrequester.sample.R
 import com.sonova.android.permissionrequester.test.PermissionTestConfiguration
-import com.sonova.android.permissionrequester.test.mockkPermissions
+import com.sonova.android.permissionrequester.test.mockPermissions
 import org.junit.Rule
 import org.junit.Test
 
@@ -136,7 +136,7 @@ class MainActivityTest {
             )
         )
 
-        mockkPermissions(permissions)
+        mockPermissions(permissions)
 
         ActivityScenario.launch(MainActivity::class.java)
     }
