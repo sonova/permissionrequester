@@ -24,8 +24,8 @@ public class PermissionRequester private constructor(
     private val permissionSnapshotLogger: PermissionSnapshotLogger,
     activityResultRegistry: ActivityResultRegistry
 ) {
-    private val notGrantedPermissions: List<PermissionRequestInformation>
-        get() = permissionsBeingRequested.filterNot { isPermissionGranted(it.permission) }
+    private val missingPermissions: List<PermissionRequestInformation>
+        get() = permissionsBeingRequested.filter { isPermissionMissing(it.permission) }
 
     private val permissionRequestCallback: (PermissionRequestResult) -> Unit =
         { permissionsResult ->
@@ -68,7 +68,7 @@ public class PermissionRequester private constructor(
         } else if (ignoreRationale) {
             requestPermissions()
         } else {
-            val rationaleToShow = notGrantedPermissions
+            val rationaleToShow = missingPermissions
                 .firstOrNull { needsRationale(it) }
                 ?.rationaleDialog
 
@@ -86,7 +86,7 @@ public class PermissionRequester private constructor(
      * @return true if all permissions are granted
      */
     public fun areAllRequiredPermissionsGranted(): Boolean {
-        return notGrantedPermissions.isEmpty()
+        return missingPermissions.isEmpty()
     }
 
     private fun showRationalForPermission(permission: PermissionRequestInformation) {
@@ -105,7 +105,7 @@ public class PermissionRequester private constructor(
     }
 
     private fun requestPermissions() {
-        val permissionsToRequest = notGrantedPermissions.map { it.permission }
+        val permissionsToRequest = missingPermissions.map { it.permission }
         if (permissionsToRequest.isEmpty()) {
             permissionGrantStatusCallback.invoke()
         } else {
@@ -162,12 +162,12 @@ public class PermissionRequester private constructor(
         }
     }
 
-    private fun isPermissionGranted(permission: String): Boolean {
-        return !isPermissionRequired(permission) ||
+    private fun isPermissionMissing(permission: String): Boolean {
+        return isPermissionRequired(permission) &&
                 ContextCompat.checkSelfPermission(
                     activity,
                     permission
-                ) == PackageManager.PERMISSION_GRANTED
+                ) != PackageManager.PERMISSION_GRANTED
     }
 
     private fun isPermissionRequired(permission: String): Boolean {
