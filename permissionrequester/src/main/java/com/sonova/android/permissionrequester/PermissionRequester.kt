@@ -170,11 +170,11 @@ public class PermissionRequester private constructor(
     }
 
     private fun isPermissionMissing(permission: String): Boolean {
-        return AndroidManifestSupport.isPermissionRequired(permission) &&
-            ContextCompat.checkSelfPermission(
-            activity,
-            permission
-        ) != PackageManager.PERMISSION_GRANTED
+        return AndroidManifestSupport.isPermissionRequested(activity, permission) &&
+                ContextCompat.checkSelfPermission(
+                    activity,
+                    permission
+                ) != PackageManager.PERMISSION_GRANTED
     }
 
     public class Builder(private val permissionSnapshotLogger: PermissionSnapshotLogger = NoLog) {
