@@ -20,7 +20,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sonova.android.permissionrequester.PermissionRequester
@@ -108,12 +107,13 @@ fun PermissionButton(permissionRequester: PermissionRequester) {
     }
 }
 
+private object PreviewActivity: ComponentActivity()
 @Preview(showBackground = true)
 @Composable
-fun PermissionButtonPreview() {
+private fun PermissionButtonPreview() {
     PermissionRequesterTheme {
         PermissionButton(
-            PermissionRequester.Builder().build(LocalContext.current as ComponentActivity)
+            PermissionRequester.Builder().build(PreviewActivity)
         )
     }
 }
