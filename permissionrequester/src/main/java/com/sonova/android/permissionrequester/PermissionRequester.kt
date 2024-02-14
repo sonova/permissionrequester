@@ -89,6 +89,13 @@ public class PermissionRequester private constructor(
         return missingPermissions.isEmpty()
     }
 
+    /**
+     * When permission has been denied by the user, a dialog will be shown. If the user
+     * has denied the permission for the first time, the rationale dialog will shown
+     * otherwise an invitation to allow the permission in settings dialog.
+     *
+     * @param permission configuration with dialogs
+     */
     private fun showRationalForPermission(permission: PermissionRequestInformation) {
         if (needsRationale(permission)) {
             showRationaleDialog(permission.rationaleDialog)
@@ -163,15 +170,11 @@ public class PermissionRequester private constructor(
     }
 
     private fun isPermissionMissing(permission: String): Boolean {
-        return isPermissionRequired(permission) &&
+        return AndroidManifestSupport.isPermissionRequired(permission) &&
             ContextCompat.checkSelfPermission(
             activity,
             permission
         ) != PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun isPermissionRequired(permission: String): Boolean {
-        return permission in ManifestPermissionsProvider.getRequestedPermissions(activity)
     }
 
     public class Builder(private val permissionSnapshotLogger: PermissionSnapshotLogger = NoLog) {

@@ -13,5 +13,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "permissionrequester"
-include(":sampleapp")
-include(":permissionrequester")
+include(":sampleapp", ":permissionrequester", ":permissionrequester-test")

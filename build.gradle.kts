@@ -59,6 +59,7 @@ subprojects {
             disable += "Instantiatable"
             checkTestSources = true
         }
+        packaging.resources.excludes.add("META-INF/LICENSE*.md")
     }
     // Android library config
     pluginManager.withPlugin("com.android.library") {
