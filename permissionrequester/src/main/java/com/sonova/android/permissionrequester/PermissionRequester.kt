@@ -164,10 +164,10 @@ public class PermissionRequester private constructor(
 
     private fun isPermissionMissing(permission: String): Boolean {
         return isPermissionRequired(permission) &&
-                ContextCompat.checkSelfPermission(
-                    activity,
-                    permission
-                ) != PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+            activity,
+            permission
+        ) != PackageManager.PERMISSION_GRANTED
     }
 
     private fun isPermissionRequired(permission: String): Boolean {
@@ -208,7 +208,9 @@ public class PermissionRequester private constructor(
             return this
         }
 
-        public fun requireGlobalLocationEnabled(builder: DialogConfigurationBuilder.() -> Unit): Builder {
+        public fun requireGlobalLocationEnabled(
+            builder: DialogConfigurationBuilder.() -> Unit
+        ): Builder {
             globalLocationPermissionEnableDialog =
                 DialogConfigurationBuilder().apply(builder).build()
             return this

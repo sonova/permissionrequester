@@ -58,7 +58,7 @@ class PermissionRequesterTest {
     }
 
     @Test
-    fun `test that only denied permissions get requested again`() {
+    fun `when only one permissions denied get requested again`() {
         permission1.deny()
         permission2.grant()
         permission3.deny()
@@ -74,7 +74,7 @@ class PermissionRequesterTest {
     }
 
     @Test
-    fun `test when no global location permission dialog config passed, then don't check location`() {
+    fun `when no global location permission dialog config passed, then don't check location`() {
         permission1.deny()
 
         Builder(logger)
@@ -410,5 +410,4 @@ class PermissionRequesterTest {
     fun tearDown() {
         unmockkAll()
     }
-
 }

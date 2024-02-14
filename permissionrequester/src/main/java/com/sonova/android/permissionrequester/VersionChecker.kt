@@ -10,5 +10,4 @@ public object VersionChecker {
     @ChecksSdkIntAtLeast(parameter = 0)
     public fun isBuildVersionUpwards(buildVersion: Int): Boolean =
         Build.VERSION.SDK_INT >= buildVersion
-
 }
