@@ -1,0 +1,6 @@
+<resources>
+    <string name="default_rationale_dialog_button_positive">Acceptar</string>
+    <string name="default_rationale_dialog_button_negative">Declinar</string>
+    <string name="default_settings_invitation_button_positive">Configuració</string>
+    <string name="default_settings_invitation_button_negative">Cancel · lar</string>
+</resources>

@@ -11,7 +11,7 @@ public object VersionChecker {
     /**
      * Checks that the buildVersion is equal or higher than the sdk of the phone.
      *
-     * @param buildVersion expected version to check
+     * @param buildVersion required API level is passed in first argument,
      * @return true if phone version >= buildVersion
      */
     @ChecksSdkIntAtLeast(parameter = 0)
