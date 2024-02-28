@@ -30,7 +30,9 @@ class MainActivityTest {
         )
 
         assertPermissionDeniedTextExists()
+
         clickOnButtonWithRationale()
+
         assertPermissionGrantedTextExists()
     }
 
@@ -42,7 +44,9 @@ class MainActivityTest {
         )
 
         assertPermissionDeniedTextExists()
+
         clickOnButtonWithRationale()
+
         onView(withText(R.string.permission_rationale_title))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
@@ -58,10 +62,13 @@ class MainActivityTest {
         )
 
         assertPermissionDeniedTextExists()
+
         clickOnButtonWithRationale()
+
         onView(withText(R.string.permission_settings_title))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+
         assertPermissionDeniedTextExists()
     }
 
