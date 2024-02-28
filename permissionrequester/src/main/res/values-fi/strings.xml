@@ -1,0 +1,6 @@
+<resources>
+    <string name="default_rationale_dialog_button_positive">Hyväksyä</string>
+    <string name="default_rationale_dialog_button_negative">Hylkää</string>
+    <string name="default_settings_invitation_button_positive">asetukset</string>
+    <string name="default_settings_invitation_button_negative">Peruuttaa</string>
+</resources>

@@ -1,0 +1,6 @@
+<resources>
+    <string name="default_rationale_dialog_button_positive">Prihvatiti</string>
+    <string name="default_rationale_dialog_button_negative">Odbiti</string>
+    <string name="default_settings_invitation_button_positive">postavke</string>
+    <string name="default_settings_invitation_button_negative">Otkazati</string>
+</resources>

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.PermissionRequester" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.PermissionRequester" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorSurface">@android:color/white</item>
+    </style>
+
 </resources>

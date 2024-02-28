@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_rationale_dialog_button_positive">Akzeptieren</string>
+    <string name="default_rationale_dialog_button_negative">Ablehnen</string>
+    <string name="default_settings_invitation_button_positive">Einstellungen</string>
+    <string name="default_settings_invitation_button_negative">Abbrechen</string>
+</resources>
