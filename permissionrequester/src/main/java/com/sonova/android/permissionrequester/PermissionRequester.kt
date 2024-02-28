@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts
@@ -160,10 +161,17 @@ public class PermissionRequester private constructor(
 
     private fun isGlobalLocationPermissionEnabled(): Boolean {
         return if (VersionChecker.isBuildVersionUpwards(Build.VERSION_CODES.P)) {
-            ContextCompat.getSystemService(
+            val locationManager = ContextCompat.getSystemService(
                 activity,
                 LocationManager::class.java
-            )?.isLocationEnabled == true
+            )
+            if (locationManager == null) {
+                Log.w(
+                    TAG,
+                    "Could not get LocationManager. Will treat the global location as not enabled."
+                )
+            }
+            locationManager?.isLocationEnabled == true
         } else {
             true
         }
@@ -288,4 +296,9 @@ public class PermissionRequester private constructor(
         val negativeButtonNameResId: Int?,
         val hasCancelButton: Boolean = true
     )
+
+    private companion object {
+        val TAG: String = PermissionRequester::class.java.simpleName
+        const val NO_ID = -1
+    }
 }
