@@ -222,8 +222,9 @@ public class PermissionRequester private constructor(
         public fun requireGlobalLocationEnabled(
             builder: DialogConfigurationBuilder.() -> Unit
         ): Builder {
-            globalLocationPermissionEnableDialog =
-                DialogConfigurationBuilder().apply(builder).build()
+            globalLocationPermissionEnableDialog = DialogConfigurationBuilder()
+                .apply(builder)
+                .build()
             return this
         }
 
@@ -262,13 +263,11 @@ public class PermissionRequester private constructor(
     /**
      * Builder to create a {@link DialogConfiguration}
      */
-    public class DialogConfigurationBuilder(
-        @StringRes public var positiveButtonNameResId: Int,
-        @StringRes public var negativeButtonNameResId: Int,
-        public var hasCancelButton: Boolean
+    public class DialogConfigurationBuilder internal constructor(
+        @StringRes public var positiveButtonNameResId: Int = NO_ID,
+        @StringRes public var negativeButtonNameResId: Int = NO_ID,
+        public var hasCancelButton: Boolean = true
     ) {
-        public constructor() : this(-1, -1, true)
-
         @StringRes
         public var titleResId: Int? = null
 
