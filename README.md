@@ -11,22 +11,33 @@ manage permissions in their apps.
 Currently the library is not on maven. Please clone the repository and build your custom `aar` file.
 Then you can include it as local library.
 
+## Functionalities
+
+The Android library is designed to streamline the process of handling permissions and location
+services within Android applications.
+- Requesting permissions from the user
+- Displaying rationale dialogs when permissions have been previously requested
+- Guiding users to the system app settings to enable permissions if they denied a permission multiple times.
+- Global location enabling and disabling, allowing for easily manageable location services
+
 ## Usage
 
 ### Initializing Permissions
 
-To request permissions, simply create a `PermissionRequester` instance before `onCreate`  and pass
-in the permission you want
-to request with dialog configuration:
+To request permissions, simply create a `PermissionRequester` instance before `onCreate`. For each
+permission you request, you'll need to pass:
+
+- Title and description for the rationale dialog
+- Title and description for the system app settings invitations g dialog
 
 ```kotlin 
 PermissionRequester.Builder()
     .requirePermissions(
-        {
+        rationaleBuilder = {
             titleResId = R.string.permission_rationale_title
             messageResId = R.string.permission_rationale_description
         },
-        {
+        settingsInvitationBuilder = {
             titleResId = R.string.permission_settings_title
             messageResId = R.string.permission_settings_description
         },
@@ -42,7 +53,14 @@ PermissionRequester.Builder()
 When requesting permission, then call `request` on your `PermissionRequester` instance:
 
 ```kotlin 
-    permissionRequester.request(false)
+    permissionRequester.request()
+```
+
+If you want to use a custom rationale dialog instead of using built-in dialog,
+then pass the value `true` when requesting the permissions.
+
+```kotlin 
+    permissionRequester.request(ignoreRationale = true)
 ```
 
 ### Testing
