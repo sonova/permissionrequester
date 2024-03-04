@@ -106,7 +106,7 @@ fun PermissionButton(permissionRequester: PermissionRequester, granted: Boolean)
                 .testTag("WithRationale"),
             onClick = {
                 showPermissionDialog.value = false
-                permissionRequester.request(false)
+                permissionRequester.request()
             }) {
             Text("Request locations permissions")
         }
