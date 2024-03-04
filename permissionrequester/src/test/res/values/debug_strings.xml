@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="test_rationale_title" translatable="false">Test Rationale Title</string>
+    <string name="test_rationale_description" translatable="false">Test Rationale Description</string>
+    <string name="test_settings_title" translatable="false">Test Settings Title</string>
+    <string name="test_settings_description" translatable="false">Test Settings Description</string>
+</resources>

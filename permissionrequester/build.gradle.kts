@@ -13,6 +13,16 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
         }
     }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
+    tasks.withType<Test> {
+        android.sourceSets["main"].res {
+            srcDir("src/test/res")
+        }
+    }
 }
 
 ktlint {
