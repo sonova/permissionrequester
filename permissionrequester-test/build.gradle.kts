@@ -1,6 +1,6 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -8,11 +8,8 @@ android {
 }
 
 dependencies {
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.test:core-ktx:1.5.0")
-
-    implementation("io.mockk:mockk-android:1.13.9")
-
+    implementation(libs.appcompat)
+    implementation(libs.androidx.test.core.ktx)
+    implementation(libs.mockk.android)
     implementation(project(":permissionrequester"))
-
 }
